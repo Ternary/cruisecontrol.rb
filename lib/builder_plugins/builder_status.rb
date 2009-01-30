@@ -80,7 +80,11 @@ class BuilderStatus
     status_file = "#{@project.path}/builder_status.#{status}"
     FileUtils.touch(status_file)
     File.open(status_file, "w"){|f| f.write message } if message
-    ProjectsController.expire_index
+
+    expire_action :controller => "projects", :action => "index"
+    expire_action :controller => "projects", :action => "index", :format => 'js'
+    expire_action :controller => "projects", :action => "index", :format => 'rss'
+    expire_action :controller => "projects", :action => "index", :format => 'cctray'
   end
 
   def builder_down?
