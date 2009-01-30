@@ -6,6 +6,8 @@
 require 'builder_error'
 
 class BuilderStatus
+  include ActionController::Caching::Actions
+
   def initialize(project)
     @project = project
   end
@@ -81,10 +83,10 @@ class BuilderStatus
     FileUtils.touch(status_file)
     File.open(status_file, "w"){|f| f.write message } if message
 
-    ActionController::Caching::Actions.expire_action :controller => "projects", :action => "index"
-    ActionController::Caching::Actions.expire_action :controller => "projects", :action => "index", :format => 'js'
-    ActionController::Caching::Actions.expire_action :controller => "projects", :action => "index", :format => 'rss'
-    ActionController::Caching::Actions.expire_action :controller => "projects", :action => "index", :format => 'cctray'
+    expire_action :controller => "projects", :action => "index"
+    expire_action :controller => "projects", :action => "index", :format => 'js'
+    expire_action :controller => "projects", :action => "index", :format => 'rss'
+    expire_action :controller => "projects", :action => "index", :format => 'cctray'
   end
 
   def builder_down?
