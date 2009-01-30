@@ -6,6 +6,7 @@
 require 'builder_error'
 
 class BuilderStatus
+  include ActionController::UrlWriter
   include ActionController::Caching
 
   def initialize(project)
