@@ -81,10 +81,10 @@ class BuilderStatus
     FileUtils.touch(status_file)
     File.open(status_file, "w"){|f| f.write message } if message
 
-    ActionController::Caching::Actions::expire_action :controller => "projects", :action => "index"
-    ActionController::Caching::Actions::expire_action :controller => "projects", :action => "index", :format => 'js'
-    ActionController::Caching::Actions::expire_action :controller => "projects", :action => "index", :format => 'rss'
-    ActionController::Caching::Actions::expire_action :controller => "projects", :action => "index", :format => 'cctray'
+    ActionController::Caching::Actions.expire_action :controller => "projects", :action => "index"
+    ActionController::Caching::Actions.expire_action :controller => "projects", :action => "index", :format => 'js'
+    ActionController::Caching::Actions.expire_action :controller => "projects", :action => "index", :format => 'rss'
+    ActionController::Caching::Actions.expire_action :controller => "projects", :action => "index", :format => 'cctray'
   end
 
   def builder_down?
