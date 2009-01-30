@@ -6,7 +6,7 @@
 require 'builder_error'
 
 class BuilderStatus
-  include ActionController::Caching::Actions
+  include ActionController::Caching
 
   def initialize(project)
     @project = project
