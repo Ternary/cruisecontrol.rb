@@ -80,6 +80,7 @@ class BuilderStatus
     status_file = "#{@project.path}/builder_status.#{status}"
     FileUtils.touch(status_file)
     File.open(status_file, "w"){|f| f.write message } if message
+    ProjectsController.expire_index
   end
 
   def builder_down?

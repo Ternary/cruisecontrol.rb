@@ -6,6 +6,16 @@ class ProjectsController < ApplicationController
   verify :params => "path", :only => [:code],
          :render => { :text => "Path not specified",
                       :status => 404 }
+
+  caches_page :index
+
+  def self.expire_index
+    expire_page :action => "index"
+    expire_page :action => "index", :format => 'js'
+    expire_page :action => "index", :format => 'rss'
+    expire_page :action => "index", :format => 'cctray'
+  end
+
   def index
     @projects = Projects.load_all
     
