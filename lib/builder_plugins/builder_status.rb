@@ -52,7 +52,7 @@ class BuilderStatus
   end
 
   def polling_source_control
-    set_status 'checking_for_modifications' unless status == 'build_requested'
+    set_status 'checking_for_modifications', nil, false unless status == 'build_requested'
   end
 
   def build_loop_failed(e)
@@ -76,8 +76,8 @@ class BuilderStatus
     end
   end
 
-  def set_status(status, message = nil)
-    FileUtils.rm_f(Dir["#{RAILS_ROOT}/tmp/cache/*/index*cache"], :verbose => true)
+  def set_status(status, message = nil, clear_cache = true)
+    FileUtils.rm_f(Dir["#{RAILS_ROOT}/tmp/cache/*/index*cache"]) if clear_cache
     FileUtils.rm_f(Dir["#{@project.path}/builder_status.*"])
     status_file = "#{@project.path}/builder_status.#{status}"
     FileUtils.touch(status_file)
