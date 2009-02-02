@@ -22,11 +22,11 @@ class BuilderStatus
   def fatal?
     %w(source_control_error timed_out).include?(status)
   end
-  
+
   def error_message
     File.open(existing_status_file){|f| f.read} rescue ""
   end
-  
+
   def build_initiated
     set_status 'building'
   end
@@ -38,21 +38,21 @@ class BuilderStatus
   def sleeping
     set_status 'sleeping' unless status == 'build_requested'
   end
-  
+
   def queued
     set_status 'queued'
   end
-  
+
   def timed_out
     set_status 'timed_out'
   end
-  
+
   def build_requested
     set_status 'build_requested'
   end
 
   def polling_source_control
-    set_status 'checking_for_modifications', nil, false unless status == 'build_requested'
+    set_status 'checking_for_modifications' unless status == 'build_requested'
   end
 
   def build_loop_failed(e)
@@ -62,12 +62,12 @@ class BuilderStatus
       set_status 'error'
     end
   end
-  
+
   private
   def existing_status_file
     Dir["#{@project.path}/builder_status.*"].first
   end
-  
+
   def read_status
     if existing_status_file
       File.basename(existing_status_file)[15..-1]
@@ -76,12 +76,20 @@ class BuilderStatus
     end
   end
 
-  def set_status(status, message = nil, clear_cache = true)
-    FileUtils.rm_f(Dir["#{RAILS_ROOT}/tmp/cache/*/index*cache"]) if clear_cache
+  def set_status(status, message = nil)
+    clear_index_cache(read_status, status)
     FileUtils.rm_f(Dir["#{@project.path}/builder_status.*"])
     status_file = "#{@project.path}/builder_status.#{status}"
     FileUtils.touch(status_file)
     File.open(status_file, "w"){|f| f.write message } if message
+  end
+
+  def clear_index_cache(old_status, new_status)
+    return if old_status == new_status
+    return if old_status == 'checking_for_modifications'
+    return if new_status == 'checking_for_modifications'
+
+    FileUtils.rm_f(Dir["#{RAILS_ROOT}/tmp/cache/*/index*cache"])
   end
 
   def builder_down?
